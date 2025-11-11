@@ -1,65 +1,12 @@
-import { Sprout, Leaf, Calculator, BookOpen, ShoppingBag, Users, TrendingUp, LogOut } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Sprout, Leaf, Calculator, BookOpen, ShoppingBag, Users, TrendingUp } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
-import { useEffect, useState } from "react";
-import { User, Session } from "@supabase/supabase-js";
-import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const navigate = useNavigate();
-  const { toast } = useToast();
-
   const farmer = {
-    name: user?.user_metadata?.name || "Farmer",
+    name: "Ramesh Kumar",
     points: 1250,
     rank: 42,
-  };
-
-  useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (!session) {
-          navigate("/auth");
-        }
-      }
-    );
-
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (!session) {
-        navigate("/auth");
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [navigate]);
-
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Logged out",
-        description: "You've been successfully logged out.",
-      });
-      navigate("/auth");
-    }
   };
 
   const quickActions = [
@@ -75,19 +22,9 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gradient-to-b from-background to-muted pb-20">
       {/* Header */}
       <div className="bg-primary text-primary-foreground px-6 pt-12 pb-8 rounded-b-[2rem] shadow-card">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-3">
-            <Sprout className="h-8 w-8" />
-            <h1 className="text-2xl font-bold">GreenGrow</h1>
-          </div>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={handleLogout}
-            className="text-primary-foreground hover:bg-primary-foreground/20"
-          >
-            <LogOut className="h-5 w-5" />
-          </Button>
+        <div className="flex items-center gap-3 mb-2">
+          <Sprout className="h-8 w-8" />
+          <h1 className="text-2xl font-bold">GreenGrow</h1>
         </div>
         <p className="text-primary-foreground/90 text-lg">Welcome back, {farmer.name}!</p>
         <div className="mt-4 flex gap-4">
