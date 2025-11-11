@@ -10,6 +10,7 @@ import Learning from "./pages/Learning";
 import ProgressTracker from "./pages/Progress";
 import BottomNav from "./components/BottomNav";
 import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
       <BrowserRouter>
         <div className="max-w-lg mx-auto relative">
           <Routes>
+            <Route path="/auth" element={<Auth />} />
             <Route path="/" element={<Dashboard />} />
             <Route path="/soil-health" element={<SoilHealth />} />
             <Route path="/calculator" element={<Calculator />} />
