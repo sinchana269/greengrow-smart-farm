@@ -8,9 +8,8 @@ const ProgressTracker = () => {
   const [progressData, setProgressData] = useState<any>(null);
   const [loadingTask, setLoadingTask] = useState(false);
 
-  // Fetch progress from backend
   const loadProgress = () => {
-    fetch("https://greengrow-backend-9lb9.onrender.com/progress")")
+    fetch("https://greengrow-backend-9lb9.onrender.com/progress")
       .then((res) => res.json())
       .then((data) => {
         console.log("Backend data:", data);
@@ -23,7 +22,6 @@ const ProgressTracker = () => {
     loadProgress();
   }, []);
 
-  // Task list
   const tasks = [
     { id: "apply_compost", name: "Apply Compost" },
     { id: "add_neem", name: "Add Neem Cake" },
@@ -32,12 +30,11 @@ const ProgressTracker = () => {
     { id: "monitor_pests", name: "Monitor Pests" },
   ];
 
-  // Handle task completion
   const completeTask = async (taskId: string) => {
     setLoadingTask(true);
 
     try {
-      const res = await fetch("https://greengrow-backend-9lb9.onrender.com/complete_task")", {
+      const res = await fetch("https://greengrow-backend-9lb9.onrender.com/complete_task", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ task: taskId }),
@@ -71,24 +68,20 @@ const ProgressTracker = () => {
 
       <div className="px-6 mt-6 space-y-4">
 
-        {/* Display backend progress numbers */}
         <Card className="p-4 border-0 shadow-card bg-success/10">
-          <p className="text-sm">Growth: <b>{progressData.growth}%</b></p>
-          <p className="text-sm">Soil Health: <b>{progressData.soil_health}%</b></p>
-          <p className="text-sm">Tasks Completed: <b>{progressData.tasks_completed}</b></p>
+          <p>Growth: <b>{progressData.growth}%</b></p>
+          <p>Soil Health: <b>{progressData.soil_health}%</b></p>
+          <p>Tasks Completed: <b>{progressData.tasks_completed}</b></p>
         </Card>
 
-        {/* REAL TASK LIST */}
+        {/* Tasks */}
         <Card className="p-6 border-0 shadow-card bg-white">
-          <h3 className="font-bold text-lg text-foreground mb-4">📝 Tasks</h3>
+          <h3 className="font-bold text-lg mb-4">📝 Tasks</h3>
 
           <div className="space-y-3">
             {tasks.map((task) => (
-              <div
-                key={task.id}
-                className="flex justify-between items-center p-3 bg-muted rounded-xl"
-              >
-                <span className="font-medium">{task.name}</span>
+              <div key={task.id} className="flex justify-between items-center p-3 bg-muted rounded-xl">
+                <span>{task.name}</span>
                 <button
                   disabled={loadingTask}
                   onClick={() => completeTask(task.id)}
@@ -102,33 +95,26 @@ const ProgressTracker = () => {
           </div>
         </Card>
 
-        {/* Stats Overview */}
+        {/* Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <Card className="p-4 border-0 shadow-card bg-success/10">
-            <div className="flex items-center gap-2 mb-1">
-              <Award className="h-5 w-5 text-success" />
-              <span className="text-sm">Points</span>
-            </div>
+          <Card className="p-4 bg-success/10">
+            <Award className="h-5 w-5 text-success" />
             <p className="text-3xl font-bold">{progressData.tasks_completed * 100}</p>
           </Card>
 
-          <Card className="p-4 border-0 shadow-card bg-primary/10">
-            <div className="flex items-center gap-2 mb-1">
-              <Target className="h-5 w-5 text-primary" />
-              <span className="text-sm">Growth</span>
-            </div>
+          <Card className="p-4 bg-primary/10">
+            <Target className="h-5 w-5 text-primary" />
             <p className="text-3xl font-bold">{progressData.growth}%</p>
           </Card>
         </div>
 
         {/* Soil Health */}
-        <Card className="p-6 border-0 shadow-card">
+        <Card className="p-6 shadow-card">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="h-5 w-5 text-success" />
-            <h3 className="font-bold text-lg text-foreground">Soil Health Progress</h3>
+            <h3 className="font-bold text-lg">Soil Health Progress</h3>
           </div>
 
-          <p className="text-sm mb-2">Organic Matter</p>
           <Progress value={progressData.soil_health} className="h-2" />
 
           <p className="text-xs text-muted-foreground mt-2">
