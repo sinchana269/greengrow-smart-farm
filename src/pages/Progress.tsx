@@ -37,7 +37,7 @@ const ProgressTracker = () => {
     setLoadingTask(true);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/complete_task", {
+      const res = await fetch("fetch("https://greengrow-backend-9lb9.onrender.com/complete_task")", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ task: taskId }),
