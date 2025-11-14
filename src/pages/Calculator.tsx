@@ -10,9 +10,42 @@ import { Progress } from "@/components/ui/progress";
 
 const Calculator = () => {
   const [calculated, setCalculated] = useState(false);
+  const [selectedCrop, setSelectedCrop] = useState("");
+  const [landArea, setLandArea] = useState(1);
+  const [selectedSeason, setSelectedSeason] = useState("");
 
-  const handleCalculate = () => {
-    setCalculated(true);
+  const [result, setResult] = useState<any>(null); // backend result
+
+  const handleCalculate = async () => {
+    if (!selectedCrop || !selectedSeason || !landArea) {
+      alert("Please fill all fields!");
+      return;
+    }
+
+    const payload = {
+      crop: selectedCrop,
+      area: landArea,
+      season: selectedSeason,
+    };
+
+    try {
+      const response = await fetch("https://greengrow-backend.onrender.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+      console.log("Backend result:", data);
+
+      setResult(data);
+      setCalculated(true);
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Backend not reachable!");
+    }
   };
 
   return (
@@ -33,7 +66,7 @@ const Calculator = () => {
             <Card className="p-6 space-y-4 border-0 shadow-card">
               <div className="space-y-2">
                 <Label>Select Crop</Label>
-                <Select>
+                <Select onValueChange={(value) => setSelectedCrop(value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Choose your crop" />
                   </SelectTrigger>
@@ -50,12 +83,17 @@ const Calculator = () => {
 
               <div className="space-y-2">
                 <Label>Land Area (acres)</Label>
-                <Input type="number" placeholder="Enter area in acres" defaultValue="1" />
+                <Input
+                  type="number"
+                  placeholder="Enter area in acres"
+                  value={landArea}
+                  onChange={(e) => setLandArea(Number(e.target.value))}
+                />
               </div>
 
               <div className="space-y-2">
                 <Label>Growing Season</Label>
-                <Select>
+                <Select onValueChange={(value) => setSelectedSeason(value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select season" />
                   </SelectTrigger>
@@ -68,7 +106,10 @@ const Calculator = () => {
               </div>
             </Card>
 
-            <Button onClick={handleCalculate} className="w-full h-12 text-lg rounded-xl bg-secondary hover:bg-secondary/90">
+            <Button
+              onClick={handleCalculate}
+              className="w-full h-12 text-lg rounded-xl bg-secondary hover:bg-secondary/90"
+            >
               Calculate Requirements
             </Button>
           </>
@@ -77,13 +118,13 @@ const Calculator = () => {
             {/* Results */}
             <Card className="p-6 border-0 shadow-card bg-gradient-to-br from-card to-primary/5">
               <h3 className="font-bold text-lg text-foreground mb-4">📊 Required Organic Inputs</h3>
-              <p className="text-sm text-muted-foreground mb-4">For Rice - 1 acre - Kharif season</p>
-              
+              <p className="text-sm text-muted-foreground mb-4">For Rice - {landArea} acre - {selectedSeason} season</p>
+
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between mb-2">
                     <span className="font-medium text-foreground">Compost</span>
-                    <span className="font-bold text-primary">200 kg</span>
+                    <span className="font-bold text-primary">{result.compost} kg</span>
                   </div>
                   <Progress value={80} className="h-2" />
                 </div>
@@ -91,7 +132,7 @@ const Calculator = () => {
                 <div>
                   <div className="flex justify-between mb-2">
                     <span className="font-medium text-foreground">Neem Cake</span>
-                    <span className="font-bold text-primary">10 kg</span>
+                    <span className="font-bold text-primary">{result.neem_cake} kg</span>
                   </div>
                   <Progress value={40} className="h-2" />
                 </div>
@@ -99,7 +140,7 @@ const Calculator = () => {
                 <div>
                   <div className="flex justify-between mb-2">
                     <span className="font-medium text-foreground">Bio-fertilizer</span>
-                    <span className="font-bold text-primary">250 g</span>
+                    <span className="font-bold text-primary">{result.bio_fertilizer} g</span>
                   </div>
                   <Progress value={25} className="h-2" />
                 </div>
@@ -107,7 +148,9 @@ const Calculator = () => {
 
               <div className="mt-6 p-4 bg-accent/20 rounded-xl border border-accent/30">
                 <p className="text-sm font-semibold text-foreground mb-1">💰 Estimated Cost</p>
-                <p className="text-2xl font-bold text-accent">₹2,840</p>
+
+                {/* FIXED: now shows backend cost field */}
+                <p className="text-2xl font-bold text-accent">₹{result.cost}</p>
               </div>
             </Card>
 
@@ -117,7 +160,7 @@ const Calculator = () => {
                 <CalendarDays className="h-5 w-5 text-primary" />
                 <h3 className="font-bold text-lg text-foreground">Application Schedule</h3>
               </div>
-              
+
               <div className="space-y-3">
                 <div className="flex gap-3 p-3 bg-muted rounded-xl">
                   <div className="shrink-0 w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold">
