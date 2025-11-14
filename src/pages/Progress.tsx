@@ -10,7 +10,7 @@ const ProgressTracker = () => {
 
   // Fetch progress from backend
   const loadProgress = () => {
-    fetch("fetch("https://greengrow-backend-9lb9.onrender.com/progress")")
+    fetch("https://greengrow-backend-9lb9.onrender.com/progress")")
       .then((res) => res.json())
       .then((data) => {
         console.log("Backend data:", data);
@@ -37,7 +37,7 @@ const ProgressTracker = () => {
     setLoadingTask(true);
 
     try {
-      const res = await fetch("fetch("https://greengrow-backend-9lb9.onrender.com/complete_task")", {
+      const res = await fetch("https://greengrow-backend-9lb9.onrender.com/complete_task")", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ task: taskId }),
