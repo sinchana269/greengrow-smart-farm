@@ -10,7 +10,7 @@ const ProgressTracker = () => {
 
   // Fetch progress from backend
   const loadProgress = () => {
-    fetch("https://greengrow-backend.onrender.com")
+    fetch("https://greengrow-backend.onrender.com/progress")
       .then((res) => res.json())
       .then((data) => {
         console.log("Backend data:", data);
