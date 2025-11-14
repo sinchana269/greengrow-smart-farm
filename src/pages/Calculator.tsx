@@ -29,7 +29,7 @@ const Calculator = () => {
     };
 
     try {
-      const response = await fetch("https://greengrow-backend.onrender.com", {
+      const response = await fetch("fetch("https://greengrow-backend-9lb9.onrender.com/calculate")", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
